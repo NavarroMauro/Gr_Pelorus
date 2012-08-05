@@ -1,0 +1,83 @@
+Wellington
+===========
+
+### Getting libraries
+library("ggplot2")
+wellCTD <- read.table("/home/mauro/Documents/PhD/wellington/data/EnvVar/CTDs/wellCTD.txt", header= TRUE, sep=",",dec=".", stringsAsFactors = TRUE)
+
+wellCTD$date <- as.Date(wellCTD$date,format="%Y/%m/%d")
+str(wellCTD)
+
+# Faceted plots
+### Temperature
+TE <- ggplot(wellCTD, aes(date, temperature)) + geom_line() + facet_wrap(~site)
+
+### Salinity
+SA <- ggplot(wellCTD, aes(date, salinity)) + geom_line() + facet_wrap(~site)
+
+###
+TU <- ggplot(wellCTD, aes(date, turbidity)) + geom_line() + facet_wrap(~site)
+
+###
+PR <- ggplot(wellCTD, aes(date, pressure)) + geom_line() + facet_wrap(~site)
+
+###
+DE <- ggplot(wellCTD, aes(date, depth)) + geom_line() + facet_wrap(~site)
+
+###
+FCHLA <- ggplot(wellCTD, aes(date, fluochla)) + geom_line() + facet_wrap(~site)
+
+Pelorus
+=======
+
+# Calling data base
+pelorusCTD <- read.csv("/home/mauro/Documents/PhD/pelorus/grad_exp/env_var/CTDprofile/allCTCpelorus.csv",
+header= TRUE, 
+sep=",",
+dec=".", 
+stringsAsFactors = TRUE
+)
+
+# Ploting environmental variables
+# Faceted plot depth/temperature
+s <- ggplot(pelorusCTD, aes(x=temperature, y=depth)) + geom_point(shape=1) + scale_y_reverse()
+s + facet_wrap(~station, ncol=5)
+
+# Faceted plot depth/saliniy
+s <- ggplot(pelorusCTD, aes(x=salinity, y=depth)) + geom_point(shape=1) + scale_y_reverse()
+s + facet_wrap(~ station, ncol=5)
+
+
+# Faceted plot depth/temperature
+s <- ggplot(pelorusCTD, aes(x=temperature, y=depth)) + geom_point(shape=1) + scale_y_reverse()
+s + facet_wrap(~ station, ncol=3, scales="free")
+
+Wet weight
+----------
+# Packages to use
+require(ggplot2)
+require(plyr)
+
+# Request data base
+weight <- read.csv(file="/home/mauro/Documents/PhD/pelorus/grad_exp/biomass/weight.csv", header=TRUE, sep=",", dec=".", stringsAsFactors=FALSE)
+
+# Make a summary to plot the data
+summary.weight <- ddply(weight, .(site, surface), summarise, 
+mean.weight=mean(weight), 
+sd.weight=sd(weight), 
+sum.weight=sum(weight))
+
+#To work with "ggplot2" bar plot use as factor instead as numeric
+summary.weight$site <- factor(summary.weight$site)
+summary.weight$surface <- factor(summary.weight$surface)
+
+# Wet weight plot
+wet.weight.plot <- ggplot(summary.weight, aes(x=site, y=mean.weight, fill=surface)) + 
+geom_bar(position=position_identity(), colour="black") + 
+geom_errorbar(aes(ymin=mean.weight-sd.weight, ymax=mean.weight+sd.weight), width=.2) +
+xlab("Sites") +
+ylab("Wet weight (g)") +
+scale_fill_manual(values=c("#808080","#FFFFFF"),name="Surface", breaks=c("wwtop","wwback"), labels=c("Upper","Lower"))+
+opts(title="Wet weight of fouling communities on upper and lower surfaces") +
+theme_set(theme_bw(16))
+print(wet.weight.plot)
