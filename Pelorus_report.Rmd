@@ -1,32 +1,3 @@
-Wellington
-===========
-
-### Getting libraries
-library("ggplot2")
-wellCTD <- read.table("/home/mauro/Documents/PhD/wellington/data/EnvVar/CTDs/wellCTD.txt", header= TRUE, sep=",",dec=".", stringsAsFactors = TRUE)
-
-wellCTD$date <- as.Date(wellCTD$date,format="%Y/%m/%d")
-str(wellCTD)
-
-# Faceted plots
-### Temperature
-TE <- ggplot(wellCTD, aes(date, temperature)) + geom_line() + facet_wrap(~site)
-
-### Salinity
-SA <- ggplot(wellCTD, aes(date, salinity)) + geom_line() + facet_wrap(~site)
-
-###
-TU <- ggplot(wellCTD, aes(date, turbidity)) + geom_line() + facet_wrap(~site)
-
-###
-PR <- ggplot(wellCTD, aes(date, pressure)) + geom_line() + facet_wrap(~site)
-
-###
-DE <- ggplot(wellCTD, aes(date, depth)) + geom_line() + facet_wrap(~site)
-
-###
-FCHLA <- ggplot(wellCTD, aes(date, fluochla)) + geom_line() + facet_wrap(~site)
-
 Pelorus
 =======
 
